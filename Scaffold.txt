@@ -1,0 +1,5 @@
+-- new db first
+scaffold-dbContext "Server=localhost;Database=DbHastane;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+-- refresh
+scaffold-dbContext "Server=localhost;Database=DbHastane;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -force

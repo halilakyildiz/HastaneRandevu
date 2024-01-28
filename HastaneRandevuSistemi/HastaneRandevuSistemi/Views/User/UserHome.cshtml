@@ -1,0 +1,135 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = @_localization.GetKey("UserPanel").Value;
+}
+
+<div class="container-fluid" style="min-height: 10rem;">
+    <div class="row">
+        <div class="col-lg-2">
+           
+            <div class="d-flex flex-column flex-shrink-0 p-3 bg-light h-100">
+                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                    <span class="fs-4">@_localization.GetKey("Menu").Value</span>
+                </a>
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li>
+                        <a href="#" name="profile" class="nav-link side-bar active">
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                            @_localization.GetKey("Profile").Value
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" name="make_appointments" class="nav-link side-bar link-dark">
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                            @_localization.GetKey("MakeAppointment").Value
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" name="appointments" class="nav-link side-bar link-dark">
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                            @_localization.GetKey("Appointments").Value
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="dropdown">
+                    <a href="@Url.Action("LogOut", "Home")" class="d-flex align-items-center link-dark text-decoration-none" aria-expanded="false">
+                        <strong>@_localization.GetKey("LogOut").Value</strong>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="menu-make_appointments" class="col-lg-10 bg-light" style="display:none;">
+            <form action="/User/MakeAppointment" method="post">
+                <div class="form-group w-50">
+                    <label for="MainScienceBranch">Ana Bilim Dalı Seçiniz:</label>
+                    <select name="main_branch" class="form-control">
+                        @foreach (var branchs in (@ViewBag.branchs as ICollection<AllScienceBranchs>))
+                        {
+                            <option value="@branchs.MainScienceBranchıd">@branchs.ScienceName</option>
+                        }
+
+                    </select>
+                </div><br>
+                <div class="form-group w-50">
+                    <label for="Policlinic">Poliklinik Seçiniz:</label>
+                    <select name="policlinic" class="form-control">
+                        @foreach (var policlinic in (@ViewBag.policlinics as ICollection<AllPoliclinics>))
+                        {
+                            <option value="@policlinic.PoliclinicId">@policlinic.PoliclinicName</option>
+                        }
+                    </select>
+                </div><br>
+                <div class="form-group w-50">
+                    <label for="Doctors">Doktor seçiniz:</label>
+                    <select name="doctor" class="form-control">
+                        @foreach (var doctor in (@ViewBag.doctors as ICollection<AllUsersInfo>))
+                        {
+                            <option value="@doctor.UserId">@doctor.UserFirstName @doctor.UserSecondName</option>
+                        }
+                    </select>
+                </div>
+                <br>
+                <div class="form-group w-50">
+                    <label for="birthday">Date:</label>
+                    <input type="date" id="birthday" class="form-control w-50" name="date">
+                    <label for="birthday">Time:</label><br>
+                    <input type="time" id="birthday" class="form-control w-50" name="time"><br><hr>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div id="menu-profile" class="col-lg-10 bg-light">
+            <div class="card col-lg-3 d-inline-block">
+                <img class="w-100 h-100" src="/img/doctors/d3.jpg" alt="">
+            </div>
+            <div class="col-lg-6 d-inline-block h-100">
+                <label><strong>Bilgiler</strong> </label>
+                <br>
+                <label for="">İsim </label><br>
+                <input type="text" placeholder="admin" disabled><br>
+                <label for="">Soyisim :</label><br>
+                <input type="text" placeholder="admin" disabled><br>
+                <label for="">Kayıt Tarihi </label><br>
+                <input type="text" placeholder="25.12.2023 16.55" disabled><br>
+                <label for="">Parola </label><br>
+                <input type="text" placeholder="1234" disabled><br>
+                <label for="">Kullanıcı Tipi</label><br>
+                <input type="text" placeholder="Admin" disabled><br>
+                <button type="submit" class="btn btn-primary mt-3">Güncelle</button>
+            </div>
+        </div>
+        <div id="menu-appointments" class="col-lg-10 bg-light" style="display:none;">
+            <table id="appointments" class="table table-striped admin-table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>@_localization.GetKey("NameSurname").Value</th>
+                        <th>@_localization.GetKey("AppointmentPlace").Value</th>
+                        <th>@_localization.GetKey("Doctor").Value</th>
+                        <th>@_localization.GetKey("AppointmentDate").Value</th>
+                        <th>@_localization.GetKey("CreatedDate").Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in (@ViewBag.appointments as ICollection<AllAppointments>))
+                    {
+                        <tr>
+                            <td>@appointment.UserFirstName @appointment.UserSecondName</td>
+                            <td>@appointment.PoliclinicName</td>
+                            <td>@appointment.doctorFirstName @appointment.doctorSecondName</td>
+                            <td>@appointment.AppointmentDate</td>
+                            <td>@appointment.CreatetDate</td>
+                            <td><a href="/User/DeleteAppointment/@appointment.AppointmentId" method="post">Sil</a></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
